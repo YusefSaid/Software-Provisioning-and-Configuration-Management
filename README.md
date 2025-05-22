@@ -1,93 +1,250 @@
-# Exercise 04 - Software Provisioning and Configuration Management
+# CTFd Platform Setup with Vagrant and Docker
 
+This project sets up a complete CTFd (Capture The Flag) platform using Vagrant for VM management and Docker for containerized services. The setup includes CTFd, MariaDB, Redis, and Nginx as a reverse proxy.
 
+## 📋 Table of Contents
 
-## Getting started
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Project Structure](#project-structure)
+- [Quick Start](#quick-start)
+- [Components](#components)
+- [Configuration](#configuration)
+- [Troubleshooting](#troubleshooting)
+- [Daily Operations](#daily-operations)
+- [Technical Details](#technical-details)
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## 🎯 Overview
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+This project automates the deployment of a CTFd platform with the following architecture:
+- **Vagrant VM**: Ubuntu 22.04 LTS host environment
+- **Docker Containers**: CTFd application, MariaDB database, Redis cache
+- **Nginx**: Reverse proxy for web traffic
+- **Port Forwarding**: Access from host machine via localhost:8080
 
-## Add your files
+## 📦 Prerequisites
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+Before starting, ensure you have the following installed on your host machine:
+
+- [VirtualBox](https://www.virtualbox.org/) (7.0 or later)
+- [Vagrant](https://www.vagrantup.com/) (2.3 or later)
+- At least 4GB free RAM
+- At least 10GB free disk space
+
+## 📁 Project Structure
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.internal.uia.no/ikt114-g-25v-it-orkestrering/LabGroup33/exercise-04-software-provisioning-and-configuration-management.git
-git branch -M main
-git push -uf origin main
+ansible-ctfd-project/
+├── Vagrantfile              # VM configuration
+├── setup.sh                 # Automated setup script
+├── README.md               # This file
+└── roles/                  # Ansible roles (optional structure)
+    ├── docker/
+    ├── ctfd/
+    └── nginx/
 ```
 
-## Integrate with your tools
+## 🚀 Quick Start
 
-- [ ] [Set up project integrations](https://gitlab.internal.uia.no/ikt114-g-25v-it-orkestrering/LabGroup33/exercise-04-software-provisioning-and-configuration-management/-/settings/integrations)
+### Initial Setup
 
-## Collaborate with your team
+1. **Clone or create the project directory:**
+   ```bash
+   mkdir -p exercise-04-software-provisioning-and-configuration-management/ansible-ctfd-project
+   cd exercise-04-software-provisioning-and-configuration-management/ansible-ctfd-project
+   ```
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+2. **Start the deployment:**
+   ```bash
+   vagrant up
+   ```
 
-## Test and Deploy
+3. **Access CTFd:**
+   - Open your browser and go to: `http://localhost:8080`
+   - Complete the initial setup wizard
 
-Use the built-in continuous integration in GitLab.
+### First-Time CTFd Configuration
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+When you first access CTFd, you'll need to configure:
 
-***
+1. **General**: Event name and description
+2. **Mode**: Team or individual competition mode
+3. **Settings**: Visibility and participation rules
+4. **Administration**: Create admin user account
+5. **Style**: Optional branding and themes
+6. **Date & Time**: Competition schedule (optional)
 
-# Editing this README
+## 🏗️ Components
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+### Core Services
 
-## Suggestions for a good README
+| Service | Description | Port | Container Name |
+|---------|-------------|------|----------------|
+| **CTFd** | Main CTF platform | 8000 | ctfd-ctfd-1 |
+| **MariaDB** | Database server | 3306 | ctfd-db-1 |
+| **Redis** | Cache server | 6379 | ctfd-cache-1 |
+| **Nginx** | Reverse proxy | 80 | (host service) |
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+### Network Configuration
 
-## Name
-Choose a self-explaining name for your project.
+- **Host Access**: `localhost:8080` → **Vagrant VM**: `port 8000`
+- **VM Internal**: `Nginx:80` → **CTFd Container**: `port 8000`
+- **Container Network**: CTFd ↔ MariaDB ↔ Redis
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## ⚙️ Configuration
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### Key Configuration Files
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+#### Vagrantfile
+- VM specifications: 2GB RAM, 2 CPUs
+- Port forwarding: guest:8000 → host:8080
+- Provisioning script execution
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+#### docker-compose.yml (auto-generated)
+```yaml
+services:
+  ctfd:
+    image: ctfd/ctfd
+    ports: ["8000:8000"]
+    environment:
+      - DATABASE_URL=mysql+pymysql://ctfd:ctfd@db/ctfd
+      - REDIS_URL=redis://cache:6379
+  
+  db:
+    image: mariadb:10.6
+    environment:
+      - MYSQL_ROOT_PASSWORD=ctfd
+      - MYSQL_USER=ctfd
+      - MYSQL_PASSWORD=ctfd
+      - MYSQL_DATABASE=ctfd
+  
+  cache:
+    image: redis:6
+```
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+#### Nginx Configuration
+```nginx
+server {
+    listen 80;
+    location / {
+        proxy_pass http://localhost:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+## 🔧 Troubleshooting
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+### Common Issues
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+| Issue | Symptoms | Solution |
+|-------|----------|----------|
+| **Port conflict** | "Address already in use" | Change host port in Vagrantfile |
+| **Container restart loop** | CTFd keeps restarting | Check Docker logs: `docker logs ctfd-ctfd-1` |
+| **Database connection** | "Connection refused" errors | Verify MariaDB container: `docker ps` |
+| **Web interface 502** | Bad Gateway error | Check Nginx and CTFd status |
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+### Diagnostic Commands
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+```bash
+# SSH into VM
+vagrant ssh
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+# Check all containers
+docker ps
 
-## License
-For open source projects, say how it is licensed.
+# View container logs
+docker logs ctfd-ctfd-1
+docker logs ctfd-db-1
+docker logs ctfd-cache-1
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+# Check Nginx status
+sudo systemctl status nginx
+
+# Test database connection
+docker exec -it ctfd-db-1 mysql -u ctfd -pctfd -e "SHOW DATABASES;"
+```
+
+## 📅 Daily Operations
+
+### Starting Up
+```bash
+# From project directory
+vagrant up
+
+# If containers aren't running
+vagrant ssh
+cd /opt/ctfd
+docker-compose up -d
+```
+
+### Shutting Down
+```bash
+# Exit SSH session
+exit
+
+# Stop VM
+vagrant halt
+```
+
+### Restarting Services
+```bash
+# Restart all containers
+docker-compose restart
+
+# Restart specific service
+docker restart ctfd-ctfd-1
+
+# Restart Nginx
+sudo systemctl restart nginx
+```
+
+## 🔍 Technical Details
+
+### System Requirements
+- **VM**: Ubuntu 22.04 LTS (2GB RAM, 2 CPUs)
+- **Docker**: Latest CE version
+- **Docker Compose**: v2.18.1+
+
+### Data Persistence
+- **Database**: `/opt/ctfd/data/mysql` (MariaDB data)
+- **Redis**: `/opt/ctfd/data/redis` (Cache data)
+- **CTFd Files**: `/opt/ctfd/data/CTFd/` (Logs, uploads)
+
+### Security Considerations
+- Default credentials are used for development
+- Database is not exposed to host network
+- Redis is not password-protected (internal use only)
+- Consider changing default passwords for production use
+
+### Performance Notes
+- VM configured with 2GB RAM (adjust if needed)
+- Database and cache use default configurations
+- Monitor resource usage with `docker stats`
+
+## 📝 Additional Notes
+
+### Customization
+- Modify `setup.sh` to change default configurations
+- Update `docker-compose.yml` template in setup script for service changes
+- Adjust Vagrant VM specs in `Vagrantfile` as needed
+
+### Backup Recommendations
+- Regular backup of `/opt/ctfd/data/` directory
+- Export CTFd challenges and user data through admin interface
+- Consider automated backup scripts for production environments
+
+### Development vs Production
+This setup is designed for development and testing. For production deployment:
+- Use proper SSL certificates
+- Implement proper secret management
+- Configure database backups
+- Set up monitoring and logging
+- Use production-grade database configurations
+
+---
+
+**Project**: Exercise 04 - Software Provisioning and Configuration Management  
+**Course**: IKT114 - IT Orchestration  
+**Institution**: University of Agder
