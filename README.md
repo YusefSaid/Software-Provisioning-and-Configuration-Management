@@ -35,13 +35,28 @@ Before starting, ensure you have the following installed on your host machine:
 
 ```
 ansible-ctfd-project/
-├── Vagrantfile              # VM configuration
-├── setup.sh                 # Automated setup script
-├── README.md               # This file
-└── roles/                  # Ansible roles (optional structure)
-    ├── docker/
-    ├── ctfd/
-    └── nginx/
+├── Vagrantfile --------------------------> # VM configuration
+├── setup.sh -----------------------------> # Automated setup script
+├── README.md ----------------------------> # This file
+├── playbook.yml -------------------------> # Main Ansible playbook
+├── group_vars/ --------------------------> # Ansible group variables
+│   └── all.yml --------------------------> # Common variables
+├── inventory/ ---------------------------> # Ansible inventory configuration
+│   └── hosts.yml ------------------------> # Host definitions
+└── roles/ -------------------------------> # Ansible roles structure
+    ├── docker/ --------------------------> # Docker installation role
+    │   ├── handlers/
+    │   │   └── main.yml -----------------> # Docker service handlers
+    │   └── tasks/
+    │       └── main.yml -----------------> # Docker installation tasks
+    ├── ctfd/ ----------------------------> # CTFd application role
+    │   ├── tasks/
+    │   │   └── main.yml -----------------> # CTFd setup tasks
+    │   └── templates/
+    │       └── docker-compose.yml.j2 ----> # Docker Compose template
+    └── nginx/ ---------------------------> # Nginx reverse proxy role
+        └── tasks/
+            └── main.yml -----------------> # Nginx configuration tasks
 ```
 
 ## Quick Start
