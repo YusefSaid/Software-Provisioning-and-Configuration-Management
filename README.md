@@ -2,7 +2,7 @@
 
 This project sets up a complete CTFd (Capture The Flag) platform using Vagrant for VM management and Docker for containerized services. The setup includes CTFd, MariaDB, Redis, and Nginx as a reverse proxy.
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)
@@ -14,7 +14,7 @@ This project sets up a complete CTFd (Capture The Flag) platform using Vagrant f
 - [Daily Operations](#daily-operations)
 - [Technical Details](#technical-details)
 
-## 🎯 Overview
+## Overview
 
 This project automates the deployment of a CTFd platform with the following architecture:
 - **Vagrant VM**: Ubuntu 22.04 LTS host environment
@@ -31,7 +31,7 @@ Before starting, ensure you have the following installed on your host machine:
 - At least 4GB free RAM
 - At least 10GB free disk space
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ansible-ctfd-project/
@@ -44,7 +44,7 @@ ansible-ctfd-project/
     └── nginx/
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Initial Setup
 
@@ -74,7 +74,7 @@ When you first access CTFd, you'll need to configure:
 5. **Style**: Optional branding and themes
 6. **Date & Time**: Competition schedule (optional)
 
-## 🏗️ Components
+## Components
 
 ### Core Services
 
@@ -91,7 +91,7 @@ When you first access CTFd, you'll need to configure:
 - **VM Internal**: `Nginx:80` → **CTFd Container**: `port 8000`
 - **Container Network**: CTFd ↔ MariaDB ↔ Redis
 
-## ⚙️ Configuration
+## Configuration
 
 ### Key Configuration Files
 
@@ -134,7 +134,7 @@ server {
 }
 ```
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -166,7 +166,7 @@ sudo systemctl status nginx
 docker exec -it ctfd-db-1 mysql -u ctfd -pctfd -e "SHOW DATABASES;"
 ```
 
-## 📅 Daily Operations
+## Daily Operations
 
 ### Starting Up
 ```bash
@@ -200,7 +200,7 @@ docker restart ctfd-ctfd-1
 sudo systemctl restart nginx
 ```
 
-## 🔍 Technical Details
+## Technical Details
 
 ### System Requirements
 - **VM**: Ubuntu 22.04 LTS (2GB RAM, 2 CPUs)
@@ -223,7 +223,7 @@ sudo systemctl restart nginx
 - Database and cache use default configurations
 - Monitor resource usage with `docker stats`
 
-## 📝 Additional Notes
+## Additional Notes
 
 ### Customization
 - Modify `setup.sh` to change default configurations
