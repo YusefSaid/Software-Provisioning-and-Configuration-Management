@@ -22,7 +22,7 @@ This project automates the deployment of a CTFd platform with the following arch
 - **Nginx**: Reverse proxy for web traffic
 - **Port Forwarding**: Access from host machine via localhost:8080
 
-## 📦 Prerequisites
+## Prerequisites
 
 Before starting, ensure you have the following installed on your host machine:
 
