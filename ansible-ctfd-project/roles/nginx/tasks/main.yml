@@ -1,0 +1,29 @@
+---
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+
+- name: Copy Nginx configuration
+  template:
+    src: nginx-proxy.conf.j2
+    dest: /etc/nginx/sites-available/ctfd
+    mode: '0644'
+
+- name: Create symbolic link for Nginx config
+  file:
+    src: /etc/nginx/sites-available/ctfd
+    dest: /etc/nginx/sites-enabled/ctfd
+    state: link
+
+- name: Remove default Nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted
+    enabled: yes

@@ -1,0 +1,15 @@
+---
+- name: Setup CTFd with supporting services
+  hosts: all
+  become: true
+  
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+  roles:
+    - ctfd/docker
+    - ctfd
+    - nginx

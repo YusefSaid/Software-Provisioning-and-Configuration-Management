@@ -1,0 +1,18 @@
+---
+- name: Create CTFd directory
+  file:
+    path: /opt/ctfd
+    state: directory
+    mode: '0755'
+
+- name: Copy docker-compose file for CTFd
+  template:
+    src: docker-compose.yml.j2
+    dest: /opt/ctfd/docker-compose.yml
+    mode: '0644'
+
+- name: Start CTFd with Docker Compose
+  community.docker.docker_compose:
+    project_src: /opt/ctfd
+    state: present
+  become: true
