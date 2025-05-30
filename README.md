@@ -6,6 +6,7 @@ This project sets up a complete CTFd (Capture The Flag) platform using Vagrant f
 
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)
+- [Architecture Overview](#architecture-Overview)
 - [Project Structure](#project-structure)
 - [Quick Start](#quick-start)
 - [Components](#components)
@@ -22,6 +23,9 @@ This project automates the deployment of a CTFd platform with the following arch
 - **Nginx**: Reverse proxy for web traffic
 - **Port Forwarding**: Access from host machine via localhost:8080
 
+## Architecture Overview
+<img width="1586" alt="Exercise 03 - Cloud instance initialization (5)" src="https://github.com/user-attachments/assets/a8176ef2-24a0-48b6-ac16-8a5edba7a9f0" />
+
 ## Prerequisites
 
 Before starting, ensure you have the following installed on your host machine:
@@ -30,7 +34,7 @@ Before starting, ensure you have the following installed on your host machine:
 - [Vagrant](https://www.vagrantup.com/) (2.3 or later)
 - At least 4GB free RAM
 - At least 10GB free disk space
-
+## Architecture Overview
 ## Project Structure
 
 ```
